@@ -28,6 +28,30 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      # Linux: Install Python 2
+      - name: Set up Python 2 (Ubuntu only)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update
+          sudo apt install -y python2
+          sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1
+
+      # macOS: Install Python 2 using Homebrew
+      - name: Set up Python 2 (macOS only)
+        if: runner.os == 'macOS'
+        run: |
+          brew install python@2 || true
+          echo "Setting Python 2 as default"
+          echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bash_profile
+          source ~/.bash_profile
+
+      # Windows: Install Python 2 using Chocolatey
+      - name: Set up Python 2 (Windows only)
+        if: runner.os == 'Windows'
+        run: |
+          choco install python2 -y
+          npm config set python C:\Python27\python.exe
+
       - name: Install dependencies
         run: |
           npm config set python /usr/bin/python2
